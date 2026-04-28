@@ -2,147 +2,58 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>名古屋北陸之旅</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Noto Sans TC', sans-serif; background-color: #F2EFE9; color: #4A4A4A; }
-        .wabi-sabi-card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.4); }
-        .date-active { background-color: #6B705C; color: white !important; transform: translateY(-3px); box-shadow: 0 4px 10px rgba(107, 112, 92, 0.3); }
-        .content-body { margin-top: -50px; border-radius: 45px 45px 0 0; background-color: #F2EFE9; position: relative; z-index: 20; min-height: 80vh; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        [v-cloak] { display: none; }
+        body { font-family: sans-serif; background-color: #F2EFE9; color: #4A4A4A; margin: 0; padding-bottom: 50px; }
+        .banner { width: 100%; h-80; overflow: hidden; position: relative; }
+        .banner img { width: 100%; height: 250px; object-fit: cover; }
+        .content { margin-top: -30px; background: #F2EFE9; border-radius: 30px 30px 0 0; position: relative; padding: 20px; }
+        .card { background: white; border-radius: 20px; padding: 15px; margin-bottom: 15px; shadow: 0 2px 5px rgba(0,0,0,0.1); border: 1px solid #ddd; }
+        .day-tag { background: #6B705C; color: white; padding: 5px 15px; border-radius: 10px; display: inline-block; margin-bottom: 10px; font-weight: bold; }
     </style>
 </head>
-<body class="pb-20">
-    <div id="app" v-cloak>
-        <div class="relative w-full h-[250px] overflow-hidden">
-            <img src="https://raw.githubusercontent.com/ohyeahnico/nagoya-trip/main/image.png" 
-                 class="w-full h-full object-cover object-center" alt="Family Trip">
-            
-            <div class="absolute bottom-16 right-4 flex gap-2 z-30">
-                <button @click="currentTab = 'itinerary'" :class="['w-12 h-12 rounded-full flex items-center justify-center wabi-sabi-card shadow-lg', currentTab === 'itinerary' ? 'bg-[#6B705C] text-white' : 'text-gray-600']">📅</button>
-                <button @click="currentTab = 'info'" :class="['w-12 h-12 rounded-full flex items-center justify-center wabi-sabi-card shadow-lg', currentTab === 'info' ? 'bg-[#6B705C] text-white' : 'text-gray-600']">ℹ️</button>
-            </div>
-        </div>
-
-        <div class="content-body px-5 pt-10">
-            
-            <div v-if="currentTab === 'itinerary'">
-                <div class="flex gap-4 overflow-x-auto pb-6 no-scrollbar">
-                    <div v-for="(day, index) in itineraryData" :key="index"
-                         @click="activeDay = index"
-                         :class="['flex-shrink-0 w-16 h-20 flex flex-col items-center justify-center rounded-2xl transition-all cursor-pointer bg-white', activeDay === index ? 'date-active' : 'text-gray-400']">
-                        <span class="text-sm font-bold">{{ day.weekday }}</span>
-                        <span class="text-2xl font-light">{{ day.date }}</span>
-                    </div>
-                </div>
-
-                <div class="space-y-5">
-                    <div v-for="(item, idx) in itineraryData[activeDay].events" :key="item.id">
-                        
-                        <div v-if="item.type === 'flight'" class="p-6 rounded-[32px] bg-slate-800 text-white shadow-xl relative">
-                            <div class="flex justify-between items-center mb-4 text-xs font-bold opacity-70">
-                                <span>{{ item.name }}</span>
-                                <span>TPE ➔ NGO</span>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <div class="text-center">
-                                    <p class="text-2xl font-bold">09:00</p>
-                                    <p class="text-[10px] opacity-60">Taipei</p>
-                                </div>
-                                <div class="flex-1 px-4 text-center">
-                                    <div class="h-[1px] bg-white/20 relative">
-                                        <span class="absolute -top-3 left-1/2 -translate-x-1/2 text-[10px]">2h 55m</span>
-                                    </div>
-                                </div>
-                                <div class="text-center">
-                                    <p class="text-2xl font-bold">12:55</p>
-                                    <p class="text-[10px] opacity-60">Nagoya</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div v-else class="wabi-sabi-card p-5 rounded-[30px] shadow-sm border border-gray-100" @click="openMap(item.name)">
-                            <div class="flex items-start gap-4">
-                                <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-xl bg-white shadow-inner">
-                                    {{ item.icon }}
-                                </div>
-                                <div class="flex-1">
-                                    <h3 class="font-bold text-gray-800 text-lg">{{ item.name }}</h3>
-                                    <div class="mt-2 space-y-1 text-xs text-gray-500">
-                                        <p v-if="item.time">🕰️ {{ item.time }}</p>
-                                        <p v-if="item.note" class="italic mt-2 text-gray-600 bg-[#6B705C]/5 p-2 rounded-xl">「{{ item.note }}」</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div v-if="idx < itineraryData[activeDay].events.length - 1" class="ml-10 py-2 border-l-2 border-dashed border-gray-300 pl-6 text-[10px] text-gray-400">
-                            {{ itineraryData[activeDay].events[idx+1].transitType === 'walk' ? '👣 步行' : '🚌 大眾運輸' }}
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div v-if="currentTab === 'info'" class="space-y-6">
-                <div class="p-6 rounded-[32px] bg-[#6B705C] text-white shadow-lg">
-                    <h3 class="text-sm font-bold mb-4">💴 匯率換算 (1 JPY ≈ 0.21 TWD)</h3>
-                    <div class="flex items-center gap-4">
-                        <input type="number" v-model="jpyInput" class="w-full bg-white/10 border-none rounded-xl p-3 text-xl font-bold outline-none">
-                        <div class="text-2xl">➔</div>
-                        <p class="w-full p-3 text-2xl font-bold">{{ (jpyInput * 0.21).toFixed(0) }} TWD</p>
-                    </div>
-                </div>
-                
-                <div class="space-y-4">
-                    <h2 class="font-bold px-2">🏨 住宿預約</h2>
-                    <div v-for="hotel in hotels" class="wabi-sabi-card p-5 rounded-[30px] shadow-sm" @click="openMap(hotel.name)">
-                        <p class="font-bold text-[#6B705C]">{{ hotel.name }}</p>
-                        <p class="text-[10px] text-gray-400 mt-1">📍 {{ hotel.addr }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+<body>
+    <div class="banner">
+        <img src="https://raw.githubusercontent.com/ohyeahnico/nagoya-trip/main/image.png" alt="Family Trip">
     </div>
 
-    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-    <script>
-        const { createApp, ref } = Vue;
-        createApp({
-            setup() {
-                const currentTab = ref('itinerary');
-                const activeDay = ref(0);
-                const jpyInput = ref(10000);
-                
-                [span_1](start_span)// 根據您的文字檔[span_1](end_span) 填入數據
-                const itineraryData = [
-                    { date: '13', weekday: 'Mon', location: '名古屋', events: [
-                        { id: 1, type: 'flight', name: 'Tiger IT206', icon: '✈️' },
-                        [span_2](start_span){ id: 2, type: 'attraction', name: '名鐵 μ-SKY', icon: '🚄', time: '13:37 / 14:07', note: '全車指定席，約28分到名古屋[span_2](end_span)' },
-                        [span_3](start_span){ id: 3, type: 'hotel', name: 'Montblanc Hotel Raffine', icon: '🏨', time: '14:30 Check-in', note: '名古屋站前[span_3](end_span)', transitType: 'walk' },
-                        [span_4](start_span){ id: 4, type: 'food', name: '備長鰻魚飯', icon: '🍱', time: '17:00 (已訂位)', note: 'Lachic百貨7樓[span_4](end_span)', transitType: 'subway' }
-                    ]},
-                    { date: '14', weekday: 'Tue', location: '高山', events: [
-                        [span_5](start_span){ id: 5, type: 'attraction', name: 'JR 特急飛驒號', icon: '🚞', time: '07:43', note: '建議選右側 D 排看溪谷[span_5](end_span)' },
-                        [span_6](start_span){ id: 6, type: 'attraction', name: '宮川朝市', icon: '🍎', time: '10:45', note: '推薦烤糰子、布丁[span_6](end_span)', transitType: 'walk' }
-                    ]},
-                    [span_7](start_span){ date: '15', weekday: 'Wed', location: '上高地', events: [{ id: 7, name: '上高地大正池', icon: '🏔️', note: '神的故鄉健行[span_7](end_span)' }] },
-                    [span_8](start_span){ date: '16', weekday: 'Thu', location: '合掌村', events: [{ id: 8, name: '白川鄉合掌村', icon: '🛖', note: '世界文化遺產[span_8](end_span)' }] },
-                    [span_9](start_span){ date: '17', weekday: 'Fri', location: '金澤', events: [{ id: 9, name: '兼六園', icon: '🌳', note: '日本三大名園[span_9](end_span)' }] }
-                ];
+    <div class="content">
+        <div class="day-tag">Day 1 - 5/13 名古屋</div>
+        <div class="card">
+            <p>✈️ <b>虎航 IT206</b> (09:00 - 12:55)</p>
+            <p>🚄 <b>名鐵 μ-SKY</b> (13:37/14:07)</p>
+            <p>🏨 <b>飯店：</b>Montblanc Hotel Raffine</p>
+            <p>🍱 <b>晚餐：</b>17:00 備長鰻魚飯 (Lachic店)</p>
+        </div>
 
-                const hotels = [
-                    [span_10](start_span){ name: 'Montblanc Hotel Raffine Nagoyaekimae', addr: '3-13-27 Meieki, Nagoya[span_10](end_span)' },
-                    [span_11](start_span){ name: 'hotel around TAKAYAMA', addr: '1-42-7 Hanaokamachi, Takayama[span_11](end_span)' }
-                ];
+        <div class="day-tag">Day 2 - 5/14 高山</div>
+        <div class="card">
+            <p>🚞 <b>JR 特急飛驒號 1號</b> (07:43發)</p>
+            <p>💡 <i>記得坐右側 D 排看溪谷！</i></p>
+            <p>🍎 <b>行程：</b>宮川朝市、高山老街</p>
+            <p>🥩 <b>晚餐：</b>17:30 飛驒牛壽喜燒</p>
+            <p>🚚 <b>重要：</b>晚上寄行李到金澤飯店</p>
+        </div>
 
-                const openMap = (q) => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}`, '_blank');
+        <div class="day-tag">Day 3 - 5/15 上高地</div>
+        <div class="card">
+            <p>🏔️ <b>神的故鄉：</b>上高地健行</p>
+            <p>🚌 <b>注意：</b>抵達總站先拿回程「整理券」</p>
+            <p>🔥 <b>晚餐：</b>18:30 味藏天國 (燒肉)</p>
+        </div>
 
-                return { currentTab, activeDay, jpyInput, itineraryData, hotels, openMap };
-            }
-        }).mount('#app');
-    </script>
+        <div class="day-tag">Day 4 & 5 - 合掌村/金澤</div>
+        <div class="card">
+            <p>🛖 <b>5/16：</b>合掌村、金澤逛街 (FORUS/百番街)</p>
+            <p>🌳 <b>5/17：</b>近江町市場、兼六園</p>
+            <p>✈️ <b>回程：</b>小松機場 IT253 (16:55)</p>
+        </div>
+
+        <div style="text-align: center; margin-top: 20px; opacity: 0.5; font-size: 12px;">
+            祝 Nico 一家名古屋之旅愉快！
+        </div>
+    </div>
 </body>
 </html>
