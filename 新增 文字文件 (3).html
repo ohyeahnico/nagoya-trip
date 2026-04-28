@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>名古屋北陸之旅</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            background-color: #F2EFE9; /* 圖片底色延伸 */
+            color: #4A4A4A;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .wabi-sabi-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .date-active {
+            background-color: #6B705C; /* 墨綠色 */
+            color: white !important;
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(107, 112, 92, 0.3);
+        }
+        .banner-mask {
+            mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+        }
+        /* 圓弧銜接 */
+        .content-body {
+            margin-top: -40px;
+            border-top-left-radius: 40px;
+            border-top-right-radius: 40px;
+            position: relative;
+            z-index: 20;
+            background-color: #F2EFE9;
+        }
+        /* 拖曳動畫 */
+        .sortable-ghost { opacity: 0.3; background: #a5a58d; }
+    </style>
+</head>
+<body class="min-h-screen pb-20">
+    <div id="app">
+        <div class="relative w-full h-[250px] overflow-hidden">
+            <img src="https://api.deepai.org/job-view-file/6c857736-24e5-4d0f-bc14-99882a6f7b11/outputs/output.jpg" 
+                 class="w-full h-full object-cover object-center" alt="Banner">
+            
+            <div class="absolute bottom-12 right-4 flex gap-2 z-30">
+                <button v-for="tab in tabs" :key="tab.id" 
+                        @click="currentTab = tab.id"
+                        :class="['p-3 rounded-full transition-all duration-300 wabi-sabi-card shadow-lg', 
+                                currentTab === tab.id ? 'bg-[#6B705C] text-white' : 'text-gray-600']">
+                    <i :data-lucide="tab.icon" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="content-body px-4 pt-8 min-h-[600px]">
+            
+            <div v-if="currentTab === 'itinerary'">
+                <div class="flex gap-4 overflow-x-auto hide-scrollbar pb-6 px-2">
+                    <div v-for="(day, index) in itineraryData" :key="index"
+                         @click="activeDay = index"
+                         :class="['flex-shrink-0 w-16 h-20 flex flex-col items-center justify-center rounded-2xl transition-all duration-300 cursor-pointer bg-white text-gray-400',
+                                 activeDay === index ? 'date-active' : '']">
+                        <span class="text-xs font-semibold uppercase">{{ day.weekday }}</span>
+                        <span class="text-2xl font-bold">{{ day.date }}</span>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-4 mb-6 p-4 rounded-3xl bg-[#A5A58D]/10 border border-[#A5A58D]/20">
+                    <i data-lucide="sun" class="w-10 h-10 text-orange-400"></i>
+                    <div>
+                        <p class="text-sm opacity-70">今日天氣 - {{ itineraryData[activeDay].location }}</p>
+                        <p class="text-lg font-medium">22°C <span class="text-sm opacity-60 ml-2">體感 20°C</span></p>
+                    </div>
+                </div>
+
+                <div id="itinerary-list" class="space-y-4">
+                    <div v-for="(item, idx) in itineraryData[activeDay].events" :key="item.id" class="relative">
+                        
+                        <div v-if="item.type === 'flight'" class="p-5 rounded-3xl bg-slate-800 text-white shadow-xl mb-4">
+                            <div class="flex justify-between items-center mb-4">
+                                <span class="px-3 py-1 bg-blue-500 rounded-full text-xs">{{ item.flightNo }}</span>
+                                <i data-lucide="plane" class="w-5 h-5 rotate-45"></i>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div class="text-center">
+                                    <p class="text-2xl font-bold">{{ item.from }}</p>
+                                    <p class="text-xs opacity-60">{{ item.depTime }}</p>
+                                </div>
+                                <div class="flex-1 border-t border-dashed border-white/30 mx-4 relative">
+                                    <span class="absolute -top-3 left-1/2 -translate-x-1/2 text-[10px]">{{ item.duration }}</span>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-2xl font-bold">{{ item.to }}</p>
+                                    <p class="text-xs opacity-60">{{ item.arrTime }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div v-else class="wabi-sabi-card p-4 rounded-3xl shadow-sm border border-gray-100 flex flex-col gap-2 group transition-all"
+                             @click="openMap(item.name)">
+                            <div class="flex justify-between items-start">
+                                <div class="flex items-center gap-2">
+                                    <div :class="['p-2 rounded-xl', typeColors[item.type]]">
+                                        <i :data-lucide="typeIcons[item.type]" class="w-4 h-4"></i>
+                                    </div>
+                                    <h3 class="font-bold text-gray-800">{{ item.name }}</h3>
+                                </div>
+                                <i data-lucide="more-vertical" class="w-4 h-4 text-gray-400"></i>
+                            </div>
+                            <div class="text-xs text-gray-500 flex flex-wrap gap-x-4 gap-y-1 ml-10">
+                                <span v-if="item.time" class="flex items-center gap-1"><i data-lucide="clock" class="w-3 h-3"></i> {{ item.time }}</span>
+                                <span v-if="item.price" class="flex items-center gap-1"><i data-lucide="ticket" class="w-3 h-3"></i> {{ item.price }}</span>
+                            </div>
+                            <p v-if="item.note" class="text-sm text-gray-600 ml-10 mt-1 italic">「{{ item.note }}」</p>
+                        </div>
+
+                        <div v-if="idx < itineraryData[activeDay].events.length - 1" class="ml-12 my-2 flex items-center gap-2 text-xs text-gray-400">
+                            <i :data-lucide="itineraryData[activeDay].events[idx+1].transitType === 'walk' ? 'footprints' : 'bus'" class="w-3 h-3"></i>
+                            <span>{{ item.transitTime || '25 min' }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div v-if="currentTab === 'info'" class="space-y-6">
+                <div class="p-6 rounded-3xl bg-[#6B705C] text-white shadow-lg">
+                    <h3 class="text-sm mb-4 flex items-center gap-2"><i data-lucide="refresh-cw" class="w-4 h-4"></i> 匯率換算 (1 JPY ≈ 0.21 TWD)</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-1">
+                            <label class="text-[10px] opacity-70">日幣 JPY</label>
+                            <input type="number" v-model="jpyInput" class="bg-white/10 border-none rounded-xl p-3 w-full text-xl font-bold focus:ring-2 ring-white/30 outline-none">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10px] opacity-70">台幣 TWD</label>
+                            <div class="p-3 text-xl font-bold">{{ (jpyInput * 0.21).toFixed(0) }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="wabi-sabi-card p-4 rounded-2xl flex items-center gap-3">
+                        <div class="bg-red-100 p-2 rounded-full text-red-600"><i data-lucide="phone-call" class="w-5 h-5"></i></div>
+                        <div><p class="text-xs text-gray-400">警察局</p><p class="font-bold">110</p></div>
+                    </div>
+                    <div class="wabi-sabi-card p-4 rounded-2xl flex items-center gap-3">
+                        <div class="bg-red-100 p-2 rounded-full text-red-600"><i data-lucide="ambulance" class="w-5 h-5"></i></div>
+                        <div><p class="text-xs text-gray-400">救護車</p><p class="font-bold">119</p></div>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <h2 class="font-bold flex items-center gap-2 ml-2"><i data-lucide="home" class="w-5 h-5 text-green-700"></i> 住宿資訊</h2>
+                    <div v-for="hotel in hotels" class="wabi-sabi-card p-4 rounded-3xl space-y-2">
+                        <p class="font-bold text-gray-800">{{ hotel.name }}</p>
+                        <p class="text-sm text-gray-500">{{ hotel.addr }}</p>
+                        <button @click="openMap(hotel.name)" class="mt-2 text-xs font-semibold text-green-800 flex items-center gap-1 border-b border-green-800 pb-1">立即導航 <i data-lucide="navigation" class="w-3 h-3"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div v-if="['shopping', 'cost'].includes(currentTab)" class="flex flex-col items-center justify-center py-20 text-gray-400">
+                <i data-lucide="construction" class="w-12 h-12 mb-4"></i>
+                <p>功能開發中...</p>
+            </div>
+
+        </div>
+
+        <button v-if="currentTab === 'itinerary'" class="fixed bottom-8 right-8 w-14 h-14 bg-[#6B705C] text-white rounded-full shadow-2xl flex items-center justify-center transition-transform active:scale-90 z-50">
+            <i data-lucide="plus" class="w-8 h-8"></i>
+        </button>
+    </div>
+
+    <script>
+        const { createApp, ref, onMounted, watch } = Vue;
+
+        createApp({
+            setup() {
+                const currentTab = ref('itinerary');
+                const activeDay = ref(0);
+                const jpyInput = ref(1000);
+                
+                const tabs = [
+                    { id: 'itinerary', icon: 'map-pin' },
+                    { id: 'info', icon: 'info' },
+                    { id: 'shopping', icon: 'shopping-bag' },
+                    { id: 'cost', icon: 'banknote' }
+                ];
+
+                const typeIcons = {
+                    attraction: 'map',
+                    hotel: 'bed',
+                    food: 'utensils',
+                    shopping: 'shopping-cart',
+                    flight: 'plane',
+                    other: 'coffee'
+                };
+
+                const typeColors = {
+                    attraction: 'bg-green-100 text-green-700',
+                    hotel: 'bg-blue-100 text-blue-700',
+                    food: 'bg-orange-100 text-orange-700',
+                    shopping: 'bg-pink-100 text-pink-700',
+                    other: 'bg-gray-100 text-gray-700'
+                };
+
+                const itineraryData = ref([
+                    { 
+                        date: '13', weekday: 'Mon', location: '名古屋',
+                        events: [
+                            { id: 1, type: 'flight', flightNo: 'Tiger IT206', from: 'TPE', to: 'NGO', depTime: '09:00', arrTime: '12:55', duration: '2h 55m' },
+                            { id: 2, type: 'attraction', name: '名鐵 μ-SKY', time: '13:37/14:07', note: '全車指定席，約28分到名古屋', transitType: 'bus' },
+                            { id: 3, type: 'hotel', name: 'Montblanc Hotel Raffine', time: '14:30 Check-in', note: '名古屋站前', transitType: 'walk' },
+                            { id: 4, type: 'food', name: '備長鰻魚飯', time: '17:00 (已訂位)', note: 'Lachic百貨7樓', transitType: 'walk' }
+                        ]
+                    },
+                    { 
+                        date: '14', weekday: 'Tue', location: '高山',
+                        events: [
+                            { id: 5, type: 'attraction', name: 'JR 特急飛驒號', time: '07:43', note: '選右側 D 排看溪谷', transitType: 'bus' },
+                            { id: 6, type: 'attraction', name: '宮川朝市', time: '06:00-12:00', note: '推薦烤糰子、布丁', transitType: 'walk' },
+                            { id: 7, type: 'food', name: '飛驒牛壽喜燒', time: '17:30 (已訂位)', note: 'Nakabashi Wakachiya', transitType: 'walk' }
+                        ]
+                    },
+                    { date: '15', weekday: 'Wed', location: '上高地', events: [] },
+                    { date: '16', weekday: 'Thu', location: '白川鄉', events: [] },
+                    { date: '17', weekday: 'Fri', location: '金澤/小松', events: [] }
+                ]);
+
+                const hotels = [
+                    { name: 'Montblanc Hotel Raffine Nagoyaekimae', addr: '3-13-27 Meieki, Nakamura Ward, Nagoya' },
+                    { name: 'hotel around TAKAYAMA (Ascend)', addr: '1-42-7 Hanaokamachi, Takayama' },
+                    { name: 'Hotel Torifito Kanazawa', addr: '2-12-1 Honmachi, Kanazawa' }
+                ];
+
+                const openMap = (query) => {
+                    window.open(https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}, '_blank');
+                };
+
+                onMounted(() => {
+                    lucide.createIcons();
+                    // 初始化拖曳功能
+                    const el = document.getElementById('itinerary-list');
+                    if(el) {
+                        Sortable.create(el, {
+                            animation: 150,
+                            ghostClass: 'sortable-ghost',
+                            handle: '.wabi-sabi-card'
+                        });
+                    }
+                });
+
+                watch([currentTab, activeDay], () => {
+                    setTimeout(() => lucide.createIcons(), 10);
+                });
+
+                return {
+                    currentTab, activeDay, tabs, itineraryData, typeIcons, typeColors, openMap, jpyInput, hotels
+                };
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>
