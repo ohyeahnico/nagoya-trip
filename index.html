@@ -3,56 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>名古屋北陸之旅</title>
+    <title>名古屋北陸家族之旅 🇯🇵</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { font-family: sans-serif; background-color: #F2EFE9; color: #4A4A4A; margin: 0; padding-bottom: 50px; }
-        .banner { width: 100%; h-80; overflow: hidden; position: relative; }
-        .banner img { width: 100%; height: 250px; object-fit: cover; }
-        .content { margin-top: -30px; background: #F2EFE9; border-radius: 30px 30px 0 0; position: relative; padding: 20px; }
-        .card { background: white; border-radius: 20px; padding: 15px; margin-bottom: 15px; shadow: 0 2px 5px rgba(0,0,0,0.1); border: 1px solid #ddd; }
-        .day-tag { background: #6B705C; color: white; padding: 5px 15px; border-radius: 10px; display: inline-block; margin-bottom: 10px; font-weight: bold; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background-color: #F8F6F2; color: #333; margin: 0; }
+        .banner-img { width: 100%; height: 260px; object-fit: cover; }
+        .day-card { background: white; border-radius: 24px; padding: 20px; margin-bottom: 20px; border: 1px solid #EAE7E2; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+        .section-title { font-weight: 800; font-size: 1.1rem; color: #6B705C; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .item-row { display: flex; gap: 12px; margin-bottom: 10px; border-bottom: 1px dashed #eee; padding-bottom: 8px; }
+        .item-icon { font-size: 1.2rem; width: 24px; text-align: center; }
+        .info-box { background: #6B705C; color: white; border-radius: 15px; padding: 15px; margin: 20px 0; }
+        .tip-badge { background: #FFE8D6; color: #B08968; font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
     </style>
 </head>
-<body>
-    <div class="banner">
-        <img src="https://raw.githubusercontent.com/ohyeahnico/nagoya-trip/main/image.png" alt="Family Trip">
-    </div>
+<body class="pb-10">
+    <img src="https://raw.githubusercontent.com/ohyeahnico/nagoya-trip/main/image.png" class="banner-img">
 
-    <div class="content">
-        <div class="day-tag">Day 1 - 5/13 名古屋</div>
-        <div class="card">
-            <p>✈️ <b>虎航 IT206</b> (09:00 - 12:55)</p>
-            <p>🚄 <b>名鐵 μ-SKY</b> (13:37/14:07)</p>
-            <p>🏨 <b>飯店：</b>Montblanc Hotel Raffine</p>
-            <p>🍱 <b>晚餐：</b>17:00 備長鰻魚飯 (Lachic店)</p>
+    <div class="px-5 -mt-8 relative z-10">
+        <div class="info-box shadow-xl">
+            <h3 class="font-bold mb-2">🧳 出發前確認</h3>
+            <div class="grid grid-cols-2 gap-2 text-[10px] opacity-90">
+                <p>✅ VJW 截圖 QR code</p>
+                <p>✅ ICOCA 儲值 ¥5000</p>
+                <p>✅ Bic Camera 優惠券</p>
+                <p>✅ 熊鈴 (上高地必備)</p>
+            </div>
         </div>
 
-        <div class="day-tag">Day 2 - 5/14 高山</div>
-        <div class="card">
-            <p>🚞 <b>JR 特急飛驒號 1號</b> (07:43發)</p>
-            <p>💡 <i>記得坐右側 D 排看溪谷！</i></p>
-            <p>🍎 <b>行程：</b>宮川朝市、高山老街</p>
-            <p>🥩 <b>晚餐：</b>17:30 飛驒牛壽喜燒</p>
-            <p>🚚 <b>重要：</b>晚上寄行李到金澤飯店</p>
+        <div class="day-card">
+            <div class="section-title">🗓️ Day 1 (5/13) 名古屋 Shopping</div>
+            <div class="item-row">
+                <div class="item-icon">✈️</div>
+                <div><b>虎航 IT206</b> (09:00 - 12:55)</div>
+            </div>
+            <div class="item-row">
+                <div class="item-icon">🚄</div>
+                <div><b>名鐵 μ-SKY</b> (13:37/14:07)<br><span class="text-xs text-gray-500">機場人工櫃檯買票比較快</span></div>
+            </div>
+            <div class="item-row">
+                <div class="item-icon">🏠</div>
+                <div><b>Montblanc Hotel Raffine</b><br><span class="text-xs text-gray-500">3-13-27 Meieki (約14:30抵達)</span></div>
+            </div>
+            <div class="item-row">
+                <div class="item-icon">🛍️</div>
+                <div><b>榮商圈血拼重點</b><br><span class="text-[10px] text-blue-600">Alpen (全日最大)、Mont-bell、PARCO、唐吉訶德</span></div>
+            </div>
+            <div class="item-row">
+                <div class="item-icon">🍱</div>
+                <div><b>晚餐：備長鰻魚飯</b> <span class="tip-badge">已訂位 17:00</span></div>
+            </div>
         </div>
 
-        <div class="day-tag">Day 3 - 5/15 上高地</div>
-        <div class="card">
-            <p>🏔️ <b>神的故鄉：</b>上高地健行</p>
-            <p>🚌 <b>注意：</b>抵達總站先拿回程「整理券」</p>
-            <p>🔥 <b>晚餐：</b>18:30 味藏天國 (燒肉)</p>
+        <div class="day-card">
+            <div class="section-title">🗓️ Day 2 (5/14) 高山散策</div>
+            <div class="item-row">
+                <div class="item-icon">🚞</div>
+                <div><b>JR 特急飛驒號 1號</b> (07:43發)<br><span class="text-xs text-red-500 font-bold">💡 記得坐右側 D 排看溪谷！</span></div>
+            </div>
+            <div class="item-row">
+                <div class="item-icon">🍎</div>
+                <div><b>宮川朝市 + 高山老街</b><br><span class="text-xs text-gray-500">烤糰子、布丁大師、飛驒牛握壽司</span></div>
+            </div>
+            <div class="item-row">
+                <div class="item-icon">🍲</div>
+                <div><b>晚餐：飛驒牛壽喜燒</b> <span class="tip-badge">已訂位 17:30</span></div>
+            </div>
+            <div class="mt-4 p-3 bg-red-50 rounded-xl border border-red-100 text-[10px] text-red-700">
+                <b>🚨 重要行李任務：</b>晚上將行李推到飯店櫃檯，填寫宅急便單寄往金澤 (Hotel Torifito Kanazawa)。
+            </div>
         </div>
 
-        <div class="day-tag">Day 4 & 5 - 合掌村/金澤</div>
-        <div class="card">
-            <p>🛖 <b>5/16：</b>合掌村、金澤逛街 (FORUS/百番街)</p>
-            <p>🌳 <b>5/17：</b>近江町市場、兼六園</p>
-            <p>✈️ <b>回程：</b>小松機場 IT253 (16:55)</p>
+        <div class="day-card">
+            <div class="section-title">🗓️ Day 3 (5/15) 上高地大自然</div>
+            <div class="item-row">
+                <div class="item-icon">🚌</div>
+                <div><b>濃飛巴士 (高山➔平湯➔上高地)</b><br><span class="text-xs text-gray-500">在大正池站下車開始健行</span></div>
+            </div>
+            <div class="item-row">
+                <div class="item-icon">🏔️</div>
+                <div><b>健行推薦：大正池 ➔ 河童橋</b><br><span class="text-xs text-blue-600">必吃：蘋果派、嘉門次小屋鹽燒岩魚</span></div>
+            </div>
+            <div class="item-row">
+                <div class="item-icon">📢</div>
+                <div><b>回程重點：拿「整理券」</b><br><span class="text-xs text-red-600 font-bold">抵達總站先拿券！回程可泡平湯足湯</span></div>
+            </div>
+            <div class="item-row">
+                <div class="item-icon">🔥</div>
+                <div><b>晚餐：味藏天國 (燒肉)</b> <span class="tip-badge">已訂位 18:30</span></div>
+            </div>
         </div>
 
-        <div style="text-align: center; margin-top: 20px; opacity: 0.5; font-size: 12px;">
-            祝 Nico 一家名古屋之旅愉快！
+        <div class="day-card">
+            <div class="section-title">🗓️ Day 4 (5/16) 合掌村➔金澤</div>
+            <div class="item-row">
+                <div class="item-icon">🛖</div>
+                <div><b>合掌村之旅</b><br><span class="text-xs text-gray-500">展望台俯瞰、和田家、三小屋</span></div>
+            </div>
+            <div class="item-row">
+                <div class="item-icon">🛍️</div>
+                <div><b>金澤購物：FORUS / 百番街</b><br><span class="text-xs text-gray-500">寶可夢中心、北陸最大 Mont-bell</span></div>
+            </div>
+            <div class="item-row">
+                <div class="item-icon">🍢</div>
+                <div><b>晚餐：金澤關東煮 勝一</b></div>
+            </div>
+        </div>
+
+        <div class="day-card">
+            <div class="section-title">🗓️ Day 5 (5/17) 金澤回程</div>
+            <div class="item-row">
+                <div class="item-icon">🦀</div>
+                <div><b>近江町市場</b> (09:00 開吃)<br><span class="text-xs text-gray-500">能登牛握壽司、現榨果汁</span></div>
+            </div>
+            <div class="item-row">
+                <div class="item-icon">🌳</div>
+                <div><b>兼六園 / 東茶屋街</b></div>
+            </div>
+            <div class="item-row">
+                <div class="item-icon">✈️</div>
+                <div><b>小松機場 IT253</b> (16:55發)<br><span class="text-xs text-gray-500">14:20 於金澤站西口搭巴士</span></div>
+            </div>
+        </div>
+
+        <div class="day-card bg-gray-50">
+            <div class="section-title">🗣️ 實用溝通句子</div>
+            <p class="text-[10px] font-bold text-gray-600">買 μ-SKY 票：</p>
+            <p class="text-[10px] bg-white p-2 rounded border mb-2 italic">4 people, μ-SKY to Nagoya Station, please.</p>
+            <p class="text-[10px] font-bold text-gray-600">寄行李到金澤：</p>
+            <p class="text-[10px] bg-white p-2 rounded border italic">Takkyubin to Kanazawa, please.</p>
         </div>
     </div>
 </body>
